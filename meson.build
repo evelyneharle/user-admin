@@ -114,6 +114,10 @@ conf.set_quoted('LIBEXECDIR', join_paths(get_option('prefix'), get_option('libex
 conf.set_quoted('FACEDIR', join_paths(get_option('prefix'), get_option('datadir'), meson.project_name(), 'face/'))
 conf.set_quoted('ICONDIR', join_paths(get_option('prefix'), get_option('datadir'), meson.project_name(), 'icon/'))
 conf.set_quoted('NUCONFIG', '/etc/mate-user-admin/nuconfig')
+if get_option('checkpassword')
+  conf.set('ENABLE_CHECKPASSWORD', 1)
+endif
+
 
 configure_file(
   output : 'config.h',

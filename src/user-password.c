@@ -85,8 +85,8 @@ static void next_login_set_password (GtkRadioButton *button, gpointer data)
 static void check_password_strength (UserPassword *dialog)
 {
     const char *s;
-    int         Level;
-    const char *Message;
+    int         Level = 5;
+    const char *Message = NULL;
 
     s = gtk_entry_get_text (GTK_ENTRY (dialog->password_entry));
     if (strlen(s) == 0)
@@ -94,7 +94,9 @@ static void check_password_strength (UserPassword *dialog)
         dialog->sensitive = FALSE;
         return;
     }
+#ifdef ENABLE_CHECKPASSWORD
     Level = GetPassStrength (s, NULL, NULL, &Message);
+#endif
     gtk_level_bar_set_value (GTK_LEVEL_BAR (dialog->level_bar), Level);
      
     /*The new password meets the requirements*/

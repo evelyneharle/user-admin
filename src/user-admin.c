@@ -655,8 +655,8 @@ static gboolean start_check_entry (gpointer data)
 {
     UserManager *dialog = USER_MANAGER (data);
     const char  *s;
-    int          Level;
-    const char  *Message;
+    int          Level = 5;
+    const char  *Message = NULL;
     const char  *tip = _("Mixed passwords improve security");
 
     s = gtk_entry_get_text (GTK_ENTRY (dialog->priv->password_entry));
@@ -667,7 +667,9 @@ static gboolean start_check_entry (gpointer data)
         SetLableFontType (dialog->priv->label_pass_note, "gray", 10, tip, FALSE);
         return TRUE;
     }
+#ifdef ENABLE_CHECKPASSWORD
     Level = GetPassStrength (s, NULL,NULL,&Message);
+#endif
     gtk_level_bar_set_value (GTK_LEVEL_BAR (dialog->priv->level_bar), Level);
 
     if(Message == NULL && Level > 1)

@@ -1,0 +1,1 @@
+option('checkpassword', type: 'boolean', value: false, description: 'Enable password strength check')
