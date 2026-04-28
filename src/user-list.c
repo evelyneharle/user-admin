@@ -160,15 +160,24 @@ void user_list_box_update (GtkWidget *list_box, GSList *user_list, int index)
 
 GtkWidget *user_list_row_get_image_label (UserListRow *row)
 {
-    return row->priv->user_image;
+    if (row != NULL)
+        return row->priv->user_image;
+
+    return NULL;
 }
 
 GtkWidget *user_list_row_get_name_label (UserListRow *row)
 {
-    return row->priv->real_name;
+    if (row != NULL)
+        return row->priv->real_name;
+
+    return NULL;
 }
 
 ActUser *user_list_row_get_user (UserListRow *row)
 {
-    return row->priv->user;
+    if (row != NULL)
+        return row->priv->user;
+
+    return NULL;
 }

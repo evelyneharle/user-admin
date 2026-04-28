@@ -105,13 +105,21 @@ static GtkWidget *set_unlock_button_tips (GtkWidget *button_lock)
 
 static void update_permission (UserWindow *win)
 {
-    gboolean  is_authorized;
-    gboolean  self_selected;
+    gboolean  is_authorized = FALSE;
+    gboolean  self_selected = FALSE;
 
     is_authorized = g_permission_get_allowed (G_PERMISSION (win->priv->permission));
-    self_selected = act_user_get_uid (win->priv->user) == geteuid ();
-
     gtk_widget_set_sensitive (win->priv->button_add, is_authorized);
+
+    if (win->priv->user != NULL)
+    {
+        self_selected = act_user_get_uid (win->priv->user) == geteuid ();
+    }
+    if (win->priv->user == NULL)
+    {
+        is_authorized = FALSE;
+    }
+
     gtk_widget_set_sensitive (win->priv->button_remove, is_authorized);
     gtk_widget_set_sensitive (GTK_WIDGET (win->priv->face), is_authorized);
     user_base_set_public_sensitive (win->priv->base, is_authorized);
@@ -445,10 +453,12 @@ user_window_new (ActUserManager *manager)
     userwin->priv->user_list = get_user_info_list (manager);
     user_list_box_update (userwin->priv->list_box, userwin->priv->user_list, 0);
     user_window_set_list_data (userwin, 0);
-    user_face_fill (userwin->priv->face, userwin->priv->user);
-    user_base_set_user (userwin->priv->base, userwin->priv->user);
-    user_window_update (userwin, userwin->priv->user);
-
+    if (userwin->priv->user != NULL)
+    {
+        user_face_fill (userwin->priv->face, userwin->priv->user);
+        user_base_set_user (userwin->priv->base, userwin->priv->user);
+        user_window_update (userwin, userwin->priv->user);
+    }
     update_permission (userwin);
     userwin->priv->manager = g_object_ref (manager);
 
@@ -472,6 +482,7 @@ void user_window_remove_user_cb (ActUserManager *um,
 static gboolean update_new_user_info (UserWindow *win)
 {
     user_window_update (win, win->priv->user);
+    update_permission (win);
 
     g_source_remove (win->priv->update_user_id);
     win->priv->update_user_id = 0;
